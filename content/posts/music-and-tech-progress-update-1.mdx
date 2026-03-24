@@ -1,0 +1,79 @@
+---
+title: "Music and Tech Progress Update 1"
+description: "Building an Interactive Vibrating String Simulator and turning it into an extensible library"
+date: 2026-03-24
+---
+
+# Building an Interactive Vibrating String Simulator
+
+I've been working on an Interactive Vibrating String Simulator, a physics visualization tool that simulates wave propagation and harmonic resonance in a vibrating string. This post covers how I set it up and how I refactored it into a library that can be easily expanded.
+
+## What It Does
+
+The project numerically solves the damped wave equation to simulate a string (0.65m length) being driven by a periodic force. Users can interactively:
+
+- Drag the forcing point along the string to change where energy is applied
+- Adjust the driving frequency (0-1500 Hz) via a slider with harmonic markers
+- Control simulation speed with a logarithmic timescale slider (0.001x to 1x)
+
+## Visual Features
+
+The simulator includes several visual elements to help understand the physics:
+
+- Real-time canvas rendering of string displacement
+- Fixed endpoints shown as circles, forcing point shown in red
+- Dashed lines indicating node and antinode positions for harmonics 1-6
+- Dynamic y-axis scaling based on displacement amplitude
+- Proximity-based labels that fade with distance from the forcing point
+
+## The Physics
+
+The simulation uses finite difference methods with 300 spatial grid points to solve the damped wave equation:
+
+∂²u/∂t² = c² ∂²u/∂x² - damping·∂u/∂t + forcing
+
+This equation describes how waves propagate along the string while accounting for energy loss (damping) and the external force driving the oscillation.
+
+## Turning It Into a Library
+
+After getting the initial simulation working, I refactored the code into a more modular structure that can be easily extended. The key architectural decisions were:
+
+### Separation of Concerns
+
+I split the codebase into distinct modules:
+
+1. `StringSimulation` (Physics Engine): Handles all the numerical computation, completely independent of rendering
+2. `StringVisualizer` (Visualizer): Manages canvas rendering and visual representation
+3. UI Controls: Separate handlers for user interaction
+
+### Extensible Design
+
+The library is designed so you can:
+
+- Swap out the rendering backend (canvas, WebGL, or even export to other formats)
+- Modify physical parameters without touching visualization code
+- Add new physics features (different boundary conditions, multiple strings, etc.)
+- Create different visual styles without changing the simulation
+
+### Clean API
+
+The simulation exposes a simple interface:
+
+```javascript
+const sim = new StringSimulation({
+  length: 0.65,
+  gridPoints: 300,
+  damping: 0.5
+});
+
+sim.setForcingPoint(0.3);
+sim.setFrequency(440);
+sim.step(deltaTime);
+```
+
+This makes it easy to integrate into other projects or build entirely different interfaces on top of the same physics engine.
+
+## What's Next
+
+- Add sound dynamically based on the string shape
+- Attempt to make a wrapper that allows notes to be played based on harmonics dynamically
