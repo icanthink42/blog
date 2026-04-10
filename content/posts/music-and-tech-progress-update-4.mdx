@@ -51,3 +51,9 @@ The 12 piano keys map to harmonics 17-32:
 - B4 → n=32 (492 Hz)
 
 Something interesting I'm running into: it sounds out of tune because of equal temperament. The harmonic series produces notes at integer multiples of the fundamental, but equal temperament divides the octave into 12 equal logarithmic steps. These don't line up exactly, so the "natural" harmonics sound slightly off compared to what we expect from a piano.
+
+## Audio Improvements
+
+I'm now using trapezoidal integration to calculate the string displacement, which gives a more accurate model of the sound. One consequence of this: I needed to scale the forcing function as the harmonic increases because higher harmonics require more energy to excite.
+
+The amplitude still decreases as I go up though. I scale it proportional to omega squared, which I thought was reflected in the physics, but I'll have to revisit why this is happening.
