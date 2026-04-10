@@ -1,0 +1,53 @@
+---
+title: "Music and Tech Progress Update 4"
+description: "Implementing piano mode by tuning the string to play specific harmonics for each key"
+date: 2026-04-10
+---
+
+# Piano Mode Implementation
+
+Skip the nerd bs and [try it here](https://string.neelema.net/)!
+
+The string simulator now has a piano mode that lets you play individual notes by exciting specific harmonics.
+
+## The Problem
+
+The original string simulation had a fundamental frequency of ~243 Hz. With harmonics spaced 243 Hz apart, we could only hit 2 distinct frequencies in the piano octave (C4-B4: 262-494 Hz). We needed more harmonics packed into that range.
+
+## The Solution
+
+We lowered the string's fundamental frequency to ~15 Hz by reducing tension and increasing density. Now harmonics are spaced only 15 Hz apart, and the 17th through 32nd harmonics fall within the piano octave. Each semitone maps to a different harmonic.
+
+## Physics
+
+To excite a specific harmonic, you must force the string at one of its antinodes (points of maximum displacement). For harmonic n, the first antinode is at position L/(2n) from the left end.
+
+So when you press a piano key:
+1. The code finds which harmonic n best matches that note's frequency
+2. It moves the forcing position to x = L/(2n)
+3. It sets the forcing frequency to n × f₁
+
+## String Parameters
+
+| Mode   | Tension | Density    | Wave Speed | Fundamental |
+|--------|---------|------------|------------|-------------|
+| Normal | 100 N   | 0.001 kg/m | 316 m/s    | 243 Hz      |
+| Piano  | 4 N     | 0.01 kg/m  | 20 m/s     | 15.4 Hz     |
+
+## Harmonic to Note Mapping
+
+The 12 piano keys map to harmonics 17-32:
+- C4 → n=17 (261 Hz)
+- C#4 → n=18 (277 Hz)
+- D4 → n=19 (292 Hz)
+- D#4 → n=20 (308 Hz)
+- E4 → n=21 (323 Hz)
+- F4 → n=22 (339 Hz)
+- F#4 → n=23 (354 Hz)
+- G4 → n=24 (369 Hz)
+- G#4 → n=25 (385 Hz)
+- A4 → n=26 (400 Hz)
+- A#4 → n=27 (416 Hz)
+- B4 → n=32 (492 Hz)
+
+Something interesting I'm running into: it sounds out of tune because of equal temperament. The harmonic series produces notes at integer multiples of the fundamental, but equal temperament divides the octave into 12 equal logarithmic steps. These don't line up exactly, so the "natural" harmonics sound slightly off compared to what we expect from a piano.
