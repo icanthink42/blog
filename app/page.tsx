@@ -9,12 +9,7 @@ export default function Home() {
 
   return (
     <div>
-      <section className="mb-12">
-        <h1 className="text-3xl font-bold tracking-tight mb-3">Neelemanet Blog</h1>
-        <p className="font-serif text-xl text-slate-600 dark:text-slate-400">
-          Notes on music, tech, and whatever I&apos;m building.
-        </p>
-      </section>
+      <h1 className="text-3xl font-bold tracking-tight mb-10">Neelemanet Blog</h1>
       <ul className="space-y-2">
         {sortedPosts.map((post) => (
           <li key={post._id}>
